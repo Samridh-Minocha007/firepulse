@@ -1,4 +1,5 @@
 import httpx
+import random  # <-- ADDED
 from typing import List, Optional
 from fastapi import Request
 from ..services import spotify_helper
@@ -24,10 +25,10 @@ def extract_song_mood(text: str) -> Optional[str]:
     best = max(scores, key=scores.get)
     return best if scores[best] > 0 else None
 
-async def get_songs_by_mood(request: Request, mood: str, language_hint: Optional[str] = None, limit: int = 5) -> List[str]:
+async def get_songs_by_mood(request: Request, mood: str, language_hint: Optional[str] = None, limit: int = 10) -> List[str]:
     """Asynchronously gets song recommendations from Spotify based on mood."""
     client: httpx.AsyncClient = request.app.state.httpx_client
-    token = await spotify_helper.get_spotify_token(request) # Pass the request object
+    token = await spotify_helper.get_spotify_token(request)
     if not token:
         return ["Failed to authenticate with Spotify."]
 
@@ -47,20 +48,23 @@ async def get_songs_by_mood(request: Request, mood: str, language_hint: Optional
         for item in res.json().get("tracks", {}).get("items", []):
             name = item.get("name", "Untitled")
             artist = item.get("artists", [{}])[0].get("name", "Unknown Artist")
-            # Returning plain text, frontend should handle the linking
             songs.append(f"{name} by {artist}")
         
-        return songs if songs else ["No songs found for that mood."]
+        if songs:
+            random.shuffle(songs) # Shuffle mood-based songs as well
+            return songs[:5] # Return a slice of 5 random songs
+            
+        return ["No songs found for that mood."]
         
     except (httpx.RequestError, httpx.HTTPStatusError) as e:
         print(f"Error fetching songs by mood from Spotify: {e}")
         return ["Failed to fetch songs from Spotify."]
 
 
-async def get_songs_by_artist(request: Request, artist_name: str, limit: int = 5) -> List[str]:
+async def get_songs_by_artist(request: Request, artist_name: str, limit: int = 10) -> List[str]:
     """Asynchronously gets songs by a specific artist from Spotify."""
     client: httpx.AsyncClient = request.app.state.httpx_client
-    token = await spotify_helper.get_spotify_token(request) # Pass the request object
+    token = await spotify_helper.get_spotify_token(request)
     if not token:
         return ["Failed to authenticate with Spotify."]
 
@@ -77,8 +81,12 @@ async def get_songs_by_artist(request: Request, artist_name: str, limit: int = 5
             name = item.get("name", "Untitled")
             artist = item.get("artists", [{}])[0].get("name", "Unknown Artist")
             songs.append(f"{name} by {artist}")
+        
+        if songs:
+            random.shuffle(songs)  # <-- ADDED: Shuffle the list of songs
+            return songs[:5] # Return a slice of 5 random songs
 
-        return songs if songs else [f"No songs found for the artist: {artist_name}."]
+        return [] # Return empty list if no songs found
 
     except (httpx.RequestError, httpx.HTTPStatusError) as e:
         print(f"Error fetching songs by artist from Spotify: {e}")

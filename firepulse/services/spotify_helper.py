@@ -2,7 +2,8 @@ import httpx
 import base64
 from typing import Optional
 from fastapi import Request
-from ..core.config import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET
+# --- MODIFIED: Import the settings object ---
+from ..core.config import settings
 
 async def get_spotify_token(request: Request) -> Optional[str]:
     """
@@ -18,7 +19,9 @@ async def get_spotify_token(request: Request) -> Optional[str]:
 
     # If no token is cached, request a new one
     url = "https://accounts.spotify.com/api/token"
-    auth_string = f"{SPOTIFY_CLIENT_ID}:{SPOTIFY_CLIENT_SECRET}"
+    
+    # --- MODIFIED: Use the settings object to get credentials ---
+    auth_string = f"{settings.SPOTIFY_CLIENT_ID}:{settings.SPOTIFY_CLIENT_SECRET}"
     auth_bytes = auth_string.encode("utf-8")
     auth_base64 = base64.b64encode(auth_bytes).decode("utf-8")
     

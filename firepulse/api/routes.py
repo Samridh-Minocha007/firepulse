@@ -1,88 +1,85 @@
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
-import re
 import httpx
 
 # Import your service functions
 from ..services import movie_bot, song_bot, voice
 
-# This is the crucial line: define the router object that main.py will import.
 router = APIRouter()
 
-class AskRequest(BaseModel):
+class QueryRequest(BaseModel):
     query: str
 
-@router.post("/ask")
-async def ask_bot(ask_request: AskRequest, request: Request):
+@router.post("/movies")
+async def get_movie_suggestions(query_request: QueryRequest, request: Request):
     """
-    Handles movie recommendation requests for moods, actors, or directors.
+    Handles ONLY movie recommendation requests.
+    It first tries to find a person (actor/director) and falls back to a movie mood.
     """
     client: httpx.AsyncClient = request.app.state.httpx_client
-    query_text = ask_request.query.lower()
+    query_text = query_request.query.strip()
     
-    # --- FIX: The regular expression is now more flexible ---
-    # It now recognizes phrases like "movies of", "films by", "directed by", etc.
-    person_match = re.search(r"(?:movies by|movies with|starring|movies of|films by|directed by)\s+(.+)", query_text)
-    if person_match:
-        person_name = person_match.group(1).strip()
-        person_id = await movie_bot.search_person_async(client, person_name)
-        
-        if not person_id:
-            raise HTTPException(status_code=404, detail=f"Sorry, I couldn't find an actor or director named '{person_name}'.")
-        
-        movies = await movie_bot.get_movies_by_person_async(client, person_id)
-        if not movies:
+    # --- Step 1: Assume the query is a person's name and search for them ---
+    person_name = query_text.title()
+    person_id = await movie_bot.search_person_async(client, person_name)
+    
+    # --- Step 2: If a person is found, return their movies ---
+    if person_id:
+        movie_results = await movie_bot.get_movies_by_person_async(client, person_id)
+        if not movie_results:
             message = f"I found {person_name}, but couldn't fetch their popular movies right now."
         else:
-            message = f"Here are some popular movies with {person_name}: {', '.join(movies)}"
+            message = f"Here are some popular movies with {person_name}: {', '.join(movie_results)}"
         
         voice_url: str | None = await voice.text_to_speech(client, message)
         return {"text": message, "voice_url": voice_url}
 
-    # Fallback to mood-based search if no person is found
-    mood = movie_bot.extract_mood(query_text)
-    if not mood:
-        raise HTTPException(status_code=400, detail="Sorry, I couldn't understand a mood, actor, or director in your request.")
+    # --- Step 3: If no person was found, fall back to mood-based movie search ---
+    movie_mood = movie_bot.extract_mood(query_text)
+    if not movie_mood:
+        raise HTTPException(status_code=404, detail="Sorry, I couldn't find an actor/director by that name or understand the mood.")
     
-    movies: list[str] = await movie_bot.get_movies_by_mood(client, mood) 
+    movies: list[str] = await movie_bot.get_movies_by_mood(client, movie_mood) 
     
-    message = f"Here are some {mood}-based movie recommendations: {', '.join(movies)}"
+    message = f"Here are some {movie_mood}-based movie recommendations: {', '.join(movies)}"
     
     voice_url: str | None = await voice.text_to_speech(client, message)
     return {"text": message, "voice_url": voice_url}
 
 
 @router.post("/songs")
-async def suggest_songs(ask_request: AskRequest, request: Request):
-    """Handles song recommendation requests based on mood or artist."""
-    query_text = ask_request.query.lower()
+async def get_song_suggestions(query_request: QueryRequest, request: Request):
+    """
+    Handles ONLY song recommendation requests.
+    It first tries to find an artist and falls back to a song mood.
+    """
+    query_text = query_request.query.strip()
+    artist_name = query_text.title()
+
+    # --- Step 1: Assume the query is an artist's name and search for them ---
+    song_results: list[str] = await song_bot.get_songs_by_artist(request, artist_name)
     
-    # Handle requests for a specific artist
-    artist_match = re.search(r"(?:songs by|play|songs from|listen to)\s+(.+)", query_text)
-    if artist_match:
-        artist_name = artist_match.group(1).strip()
-        songs: list[str] = await song_bot.get_songs_by_artist(request, artist_name)
-        if songs and "Failed" in songs[0]:
-            raise HTTPException(status_code=500, detail=songs[0])
-        message = f"Here are some songs by {artist_name}: " + ", ".join(songs)
-        return {"text": message, "voice_url": None}
+    # --- Step 2: If an artist is found, return their songs ---
+    if song_results and "Failed" not in song_results[0]:
+        message = f"Here are some songs by {artist_name}: " + ", ".join(song_results)
+        voice_url: str | None = await voice.text_to_speech(request.app.state.httpx_client, message)
+        return {"text": message, "voice_url": voice_url}
     
-    # Handle requests based on mood
-    mood = song_bot.extract_song_mood(query_text)
-    if not mood:
+    # --- Step 3: If no artist was found, fall back to mood-based song search ---
+    song_mood = song_bot.extract_song_mood(query_text)
+    if not song_mood:
         raise HTTPException(
-            status_code=400,
-            detail="Sorry, I couldn't figure out the mood. Try something like 'play sad songs' or 'romantic Hindi music'."
+            status_code=404,
+            detail="Sorry, I couldn't find that artist or understand the mood."
         )
     
-    language_hint = "hindi" if "hindi" in query_text else None
-    songs: list[str] = await song_bot.get_songs_by_mood(request, mood, language_hint)
-    if songs and "Failed" in songs[0]:
-        raise HTTPException(status_code=500, detail=songs[0])
+    language_hint = "hindi" if "hindi" in query_text.lower() else None
+    mood_songs: list[str] = await song_bot.get_songs_by_mood(request, song_mood, language_hint)
+    
+    if mood_songs and "Failed" in mood_songs[0]:
+        raise HTTPException(status_code=500, detail=mood_songs[0])
 
-    message = f"Here are some {mood}-based song recommendations: " + ", ".join(songs)
+    message = f"Here are some {song_mood}-based song recommendations: " + ", ".join(mood_songs)
     
-    client: httpx.AsyncClient = request.app.state.httpx_client
-    voice_url: str | None = await voice.text_to_speech(client, message)
-    
+    voice_url: str | None = await voice.text_to_speech(request.app.state.httpx_client, message)
     return {"text": message, "voice_url": voice_url}

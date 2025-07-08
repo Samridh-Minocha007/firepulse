@@ -4,7 +4,7 @@ import httpx
 import asyncio
 import random
 import pytz
-from ..core.config import TMDB_API_KEY
+from ..core.config import settings
 
 router = APIRouter()
 
@@ -39,7 +39,7 @@ time_greetings = {
 async def get_movies_async(client: httpx.AsyncClient, original_lang: str, page: int, genres: str = None, keywords: str = None):
     url = "https://api.themoviedb.org/3/discover/movie"
     params = {
-        "api_key": TMDB_API_KEY,
+        "api_key": settings.TMDB_API_KEY,
         "language": "en-US",
         "with_original_language": original_lang,
         "sort_by": "popularity.desc",
@@ -61,7 +61,7 @@ async def get_movies_async(client: httpx.AsyncClient, original_lang: str, page: 
 
 async def get_latest_movies_async(client: httpx.AsyncClient):
     url = "https://api.themoviedb.org/3/movie/now_playing"
-    params = {"api_key": TMDB_API_KEY, "language": "en-US", "page": 1, "region": "IN"}
+    params = {"api_key": settings.TMDB_API_KEY, "language": "en-US", "page": 1, "region": "IN"}
     try:
         response = await client.get(url, params=params)
         response.raise_for_status()
@@ -73,7 +73,7 @@ async def get_latest_movies_async(client: httpx.AsyncClient):
 @router.get("/time-based-suggestions")
 async def time_based_suggestions(request: Request, user_timezone: str = "Asia/Kolkata"):
     client: httpx.AsyncClient = request.app.state.httpx_client
-    if not TMDB_API_KEY:
+    if not settings.TMDB_API_KEY:
         raise HTTPException(status_code=500, detail="TMDB_API_KEY not configured.")
 
     try:
