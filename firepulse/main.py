@@ -6,6 +6,7 @@ from contextlib import asynccontextmanager
 from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
+from mangum import Mangum
 
 
 from .core.db import Base, engine
@@ -75,3 +76,5 @@ if os.path.isdir("static"):
 async def read_root():
     
     return {"status": "ok", "message": "Welcome to the FirePulse+ API!"}
+
+handler = Mangum(app)
