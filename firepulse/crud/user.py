@@ -1,12 +1,13 @@
 # firepulse/crud/user.py
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload # Import joinedload
 from ..models import user as user_model
 from ..schemas import user as user_schema
 from ..core.security import get_password_hash
 
 def get_user_by_email(db: Session, email: str):
-    """Fetches a user by their email address."""
-    return db.query(user_model.User).filter(user_model.User.email == email).first()
+    """Fetches a user by their email address, eagerly loading their badges."""
+    # Use .options(joinedload(relationship)) to eager load the badges
+    return db.query(user_model.User).options(joinedload(user_model.User.badges)).filter(user_model.User.email == email).first()
 
 def create_user(db: Session, user: user_schema.UserCreate):
     """Creates a new user in the database."""
@@ -19,6 +20,7 @@ def create_user(db: Session, user: user_schema.UserCreate):
 
 def update_user_google_creds(db: Session, user_email: str, creds_json: str):
     """Updates a user's Google credentials."""
+    # This call to get_user_by_email will now also eager load badges
     db_user = get_user_by_email(db, email=user_email)
     if db_user:
         db_user.google_creds_json = creds_json

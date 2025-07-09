@@ -27,3 +27,4 @@ app/static/audio/
 # If you don't want the .qodo folder to be part of the repo
 .qodo/
 
+firepulse/core/config.py

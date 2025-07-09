@@ -31,7 +31,6 @@ def get_db():
     finally:
         db.close()
 
-# --- NEW: Dependency to get the current user from a token ---
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> UserModel:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

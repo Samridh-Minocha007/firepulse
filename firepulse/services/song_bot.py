@@ -3,6 +3,7 @@ import random  # <-- ADDED
 from typing import List, Optional
 from fastapi import Request
 from ..services import spotify_helper
+import random
 
 SONG_MOOD_KEYWORDS = {
     "happy": ["happy", "joy", "dance", "party", "energetic", "fun"],
@@ -71,7 +72,7 @@ async def get_songs_by_artist(request: Request, artist_name: str, limit: int = 1
     headers = {"Authorization": f"Bearer {token}"}
     params = {"q": f"artist:{artist_name}", "type": "track", "limit": limit}
     url = "https://api.spotify.com/v1/search"
-    
+
     try:
         res = await client.get(url, headers=headers, params=params)
         res.raise_for_status()
@@ -81,10 +82,11 @@ async def get_songs_by_artist(request: Request, artist_name: str, limit: int = 1
             name = item.get("name", "Untitled")
             artist = item.get("artists", [{}])[0].get("name", "Unknown Artist")
             songs.append(f"{name} by {artist}")
-        
+
         if songs:
-            random.shuffle(songs)  # <-- ADDED: Shuffle the list of songs
-            return songs[:5] # Return a slice of 5 random songs
+            # --- THIS IS THE FIX for repetitive results ---
+            random.shuffle(songs)
+            return songs[:5] # Return a random slice of 5 songs
 
         return [] # Return empty list if no songs found
 

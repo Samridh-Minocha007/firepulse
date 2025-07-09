@@ -59,9 +59,13 @@ async def get_song_suggestions(query_request: QueryRequest, request: Request):
     # --- Step 1: Assume the query is an artist's name and search for them ---
     song_results: list[str] = await song_bot.get_songs_by_artist(request, artist_name)
     
-    # --- Step 2: If an artist is found, return their songs ---
     if song_results and "Failed" not in song_results[0]:
+        # --- DEFINITIVE DEBUGGING STEP ---
+        print("\n--- DEBUG MARKER: CONSTRUCTING SONG MESSAGE ---")
         message = f"Here are some songs by {artist_name}: " + ", ".join(song_results)
+        print(f"--- DEBUG MARKER: FINAL MESSAGE BEING SENT: '{message}' ---\n")
+        # --- END DEBUGGING STEP ---
+
         voice_url: str | None = await voice.text_to_speech(request.app.state.httpx_client, message)
         return {"text": message, "voice_url": voice_url}
     

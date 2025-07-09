@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { AuthForm } from './components/AuthForm';
 import { Dashboard } from './components/Dashboard';
+import { Sidebar } from './components/Sidebar';
+import { TriviaGame } from './components/TriviaGame';
+import { MyHistory } from './components/MyHistory';
+import { CalendarEvents } from './components/CalendarEvents';
+import { AnimatedBackground } from './components/AnimatedBackground';
+import { WatchParty } from './components/WatchParty';
 
-// This is our main application component. It acts as a controller.
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authToken, setAuthToken] = useState(null);
   const [userEmail, setUserEmail] = useState('');
+  const [activeView, setActiveView] = useState('Discover');
 
-  // --- NEW: Check for a token when the app first loads ---
-  // `useEffect` is a hook that runs code after the component renders.
-  // An empty dependency array `[]` means it only runs once, like componentDidMount.
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     const email = localStorage.getItem('userEmail');
@@ -22,16 +25,14 @@ export default function App() {
   }, []);
 
   const handleLogin = (token, email) => {
-    // Save token and email to localStorage for persistence
     localStorage.setItem('authToken', token);
     localStorage.setItem('userEmail', email);
     setAuthToken(token);
     setUserEmail(email);
     setIsAuthenticated(true);
   };
-  
+
   const handleLogout = () => {
-    // Clear token and email from localStorage
     localStorage.removeItem('authToken');
     localStorage.removeItem('userEmail');
     setAuthToken(null);
@@ -39,13 +40,45 @@ export default function App() {
     setIsAuthenticated(false);
   };
 
+  const renderActiveView = () => {
+    switch (activeView) {
+      case 'Discover':
+        return <Dashboard authToken={authToken} />;
+      case 'Trivia Game':
+        return <TriviaGame authToken={authToken} />;
+      case 'My History':
+        return <MyHistory authToken={authToken} />;
+      case 'Calendar':
+        return <CalendarEvents authToken={authToken} />;
+      case 'Watch Party':
+        return <WatchParty userEmail={userEmail} />;
+      default:
+        return <Dashboard authToken={authToken} />;
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center font-sans p-4">
-      {isAuthenticated ? (
-        <Dashboard userEmail={userEmail} onLogout={handleLogout} />
-      ) : (
-        <AuthForm onLoginSuccess={handleLogin} />
-      )}
+    <div className="min-h-screen bg-gray-800 text-white font-sans relative">
+      <AnimatedBackground />
+      <div className="relative z-10">
+        {isAuthenticated && authToken ? (
+          <div className="flex">
+            <Sidebar
+              userEmail={userEmail}
+              onLogout={handleLogout}
+              activeView={activeView}
+              setActiveView={setActiveView}
+            />
+            <main className="flex-grow">
+              {renderActiveView()}
+            </main>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center min-h-screen">
+            <AuthForm onLoginSuccess={handleLogin} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

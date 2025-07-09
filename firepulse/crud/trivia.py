@@ -13,18 +13,21 @@ def create_trivia_question(db: Session, question_data: dict, category: str):
 
     db_question = db.query(TriviaQuestionModel).filter_by(question_text=question_text).first()
     if db_question:
+        # If question already exists, return it, but ensure it's not marked as answered for this user
+        # (This logic is handled by get_unanswered_question's filter)
         return db_question
 
     correct_answer_text = ""
     incorrect_answers = []
     for answer in question_data['answers']:
-        if answer['is_correct']:
-            correct_answer_text = answer['text']
+        if answer.get('is_correct'): # Use .get() for safety
+            correct_answer_text = answer.get('text')
         else:
-            incorrect_answers.append(answer['text'])
+            incorrect_answers.append(answer.get('text'))
 
+    # Ensure there are always 3 incorrect answers, fill with placeholders if Gemini provides fewer
     while len(incorrect_answers) < 3:
-        incorrect_answers.append("A generated incorrect answer")
+        incorrect_answers.append("Generated incorrect answer") # Fallback text
 
     db_question = TriviaQuestionModel(
         category=category,
@@ -48,7 +51,7 @@ def get_unanswered_question(db: Session, category: str, user_id: int):
         .filter(
             and_(
                 TriviaQuestionModel.category.ilike(f'%{category}%'),
-                TriviaQuestionModel.id.not_in(answered_question_ids)
+                TriviaQuestionModel.id.notin_(answered_question_ids) # Use not_in for a subquery
             )
         )
         .order_by(func.random())
@@ -66,3 +69,13 @@ def record_user_answer(db: Session, user_id: int, question_id: int, was_correct:
 def get_question_by_id(db: Session, question_id: int):
     """Fetches a question by its ID."""
     return db.query(TriviaQuestionModel).filter_by(id=question_id).first()
+
+
+def get_user_score(db: Session, user_id: int) -> int:
+    """Calculates the total trivia score for a user."""
+    correct_answers_count = (
+        db.query(UserAnswerModel)
+        .filter_by(user_id=user_id, was_correct=True)
+        .count()
+    )
+    return correct_answers_count * 10 # 10 points per correct answer
