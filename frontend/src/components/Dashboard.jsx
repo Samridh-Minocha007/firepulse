@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useTypewriter } from '../hooks/useTypewriter'; // Assuming this path is correct
+import { useTypewriter } from '../hooks/useTypewriter'; 
 
 export const Dashboard = ({ authToken }) => {
     const [query, setQuery] = useState('');
@@ -12,23 +12,23 @@ export const Dashboard = ({ authToken }) => {
     const [timeBasedRecommendations, setTimeBasedRecommendations] = useState([]);
     const [isLoadingTimeRecs, setIsLoadingTimeRecs] = useState(true);
     const [timeRecsError, setTimeRecsError] = useState('');
-    const [timeRecsGreeting, setTimeRecsGreeting] = useState(''); // New state for the greeting message
+    const [timeRecsGreeting, setTimeRecsGreeting] = useState(''); 
 
     const typedResult = useTypewriter(resultText, 30);
 
-    // Feature: Fetch time-based suggestion on component load
+    
     useEffect(() => {
         const fetchTimeBasedRecommendations = async () => {
-            console.log("DEBUG: fetchTimeBasedRecommendations called. authToken:", authToken); // DEBUG 1
+            console.log("DEBUG: fetchTimeBasedRecommendations called. authToken:", authToken); 
             if (!authToken) {
                 setIsLoadingTimeRecs(false);
                 setTimeRecsError('Authentication required for time-based recommendations.');
-                console.log("DEBUG: No authToken, skipping fetch."); // DEBUG 2
+                console.log("DEBUG: No authToken, skipping fetch."); 
                 return;
             }
             setIsLoadingTimeRecs(true);
             setTimeRecsError('');
-            setTimeRecsGreeting(''); // Clear previous greeting
+            setTimeRecsGreeting(''); 
             try {
                 const hour = new Date().getHours();
                 let timeOfDay;
@@ -42,30 +42,30 @@ export const Dashboard = ({ authToken }) => {
                     timeOfDay = 'night';
                 }
 
-                // FIX: Changed _ to - in the URL path to match backend
+                
                 const response = await fetch(`/api/v1/time-based-suggestions?time_of_day=${timeOfDay}`, {
                     headers: { 'Authorization': `Bearer ${authToken}` },
                 });
                 
-                console.log("DEBUG: Time recs fetch response status:", response.status); // DEBUG 3
+                console.log("DEBUG: Time recs fetch response status:", response.status);
                 const data = await response.json();
-                console.log("DEBUG: Time recs fetch response data:", data); // DEBUG 4
+                console.log("DEBUG: Time recs fetch response data:", data); 
 
                 if (!response.ok) {
                     throw new Error(data.detail || 'Could not fetch time-based recommendations.');
                 }
                 setTimeBasedRecommendations(data.suggestions || []); 
-                setTimeRecsGreeting(data.greeting || "Here are some recommendations for you!"); // Set the greeting
-                console.log("DEBUG: Time recs set to state:", data.suggestions); // DEBUG 5
+                setTimeRecsGreeting(data.greeting || "Here are some recommendations for you!"); 
+                console.log("DEBUG: Time recs set to state:", data.suggestions); 
             } catch (err) {
-                console.error("DEBUG: Failed to fetch time-based suggestion:", err); // DEBUG 6
+                console.error("DEBUG: Failed to fetch time-based suggestion:", err); 
                 setTimeRecsError(err.message);
             } finally {
                 setIsLoadingTimeRecs(false);
             }
         };
         fetchTimeBasedRecommendations();
-    }, [authToken]); // Re-fetch if authToken changes
+    }, [authToken]); 
 
     const handleSearch = async (e) => {
         e.preventDefault();

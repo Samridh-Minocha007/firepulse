@@ -29,7 +29,7 @@ export const AuthForm = ({ onLoginSuccess }) => {
     setIsLoading(true);
     setApiMessage('');
 
-    // --- THIS IS THE FIX: Add the /api/v1 prefix ---
+    
     const endpoint = isLoginView ? '/api/v1/token' : '/api/v1/users/';
     
     const body = isLoginView 

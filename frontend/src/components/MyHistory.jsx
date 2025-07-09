@@ -4,9 +4,9 @@ export const MyHistory = ({ authToken }) => {
   const [history, setHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const [movieInput, setMovieInput] = useState(''); // New state for movie input
-  const [isLogging, setIsLogging] = useState(false); // New state for logging status
-  const [logMessage, setLogMessage] = useState(''); // New state for log messages
+  const [movieInput, setMovieInput] = useState(''); 
+  const [isLogging, setIsLogging] = useState(false); 
+  const [logMessage, setLogMessage] = useState(''); 
 
   const fetchHistory = async () => {
     setIsLoading(true);
@@ -45,8 +45,8 @@ export const MyHistory = ({ authToken }) => {
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || 'Failed to log movie.');
       setLogMessage(data.message);
-      setMovieInput(''); // Clear input on success
-      fetchHistory(); // Refresh history after logging
+      setMovieInput(''); 
+      fetchHistory(); 
     } catch (err) {
       setLogMessage(`Error logging movie: ${err.message}`);
     } finally {

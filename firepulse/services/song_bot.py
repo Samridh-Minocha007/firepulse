@@ -1,5 +1,5 @@
 import httpx
-import random  # <-- ADDED
+import random  
 from typing import List, Optional
 from fastapi import Request
 from ..services import spotify_helper
@@ -52,8 +52,8 @@ async def get_songs_by_mood(request: Request, mood: str, language_hint: Optional
             songs.append(f"{name} by {artist}")
         
         if songs:
-            random.shuffle(songs) # Shuffle mood-based songs as well
-            return songs[:5] # Return a slice of 5 random songs
+            random.shuffle(songs) 
+            return songs[:5] 
             
         return ["No songs found for that mood."]
         
@@ -84,11 +84,11 @@ async def get_songs_by_artist(request: Request, artist_name: str, limit: int = 1
             songs.append(f"{name} by {artist}")
 
         if songs:
-            # --- THIS IS THE FIX for repetitive results ---
+            
             random.shuffle(songs)
-            return songs[:5] # Return a random slice of 5 songs
+            return songs[:5] 
 
-        return [] # Return empty list if no songs found
+        return [] 
 
     except (httpx.RequestError, httpx.HTTPStatusError) as e:
         print(f"Error fetching songs by artist from Spotify: {e}")

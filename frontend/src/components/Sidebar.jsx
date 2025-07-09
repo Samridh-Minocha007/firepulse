@@ -11,8 +11,7 @@ export const Sidebar = ({ onLogout, userEmail, activeView, setActiveView }) => {
     { name: 'Watch Party', icon: '🎉' },
   ];
 
-  // --- THIS IS THE FIX ---
-  // The onClick handler now includes a console.log for definitive debugging.
+  
   const handleItemClick = (viewName) => {
     console.log(`[Sidebar.jsx] Clicked on: ${viewName}. Setting active view.`);
     setActiveView(viewName);

@@ -5,9 +5,9 @@ export const TriviaGame = ({ authToken }) => {
   const [question, setQuestion] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState('');
-  const [userBadges, setUserBadges] = useState([]); // New state for user badges
-  const [totalPoints, setTotalPoints] = useState(0); // New state for total points
-  const [isFetchingUserData, setIsFetchingUserData] = useState(true); // New state for user data loading
+  const [userBadges, setUserBadges] = useState([]); 
+  const [totalPoints, setTotalPoints] = useState(0); 
+  const [isFetchingUserData, setIsFetchingUserData] = useState(true); 
 
   // Function to fetch user badges and points
   const fetchUserData = async () => {
@@ -22,8 +22,7 @@ export const TriviaGame = ({ authToken }) => {
       if (!badgesResponse.ok) throw new Error(badgesData.detail || 'Failed to fetch badges.');
       setUserBadges(badgesData);
 
-      // Fetch Total Points (assuming a new endpoint for this, e.g., /api/v1/users/me/points)
-      // You'll need to implement this backend endpoint.
+      
       const pointsResponse = await fetch('/api/v1/users/me/points', {
         headers: { 'Authorization': `Bearer ${authToken}` },
       });
@@ -33,14 +32,14 @@ export const TriviaGame = ({ authToken }) => {
 
     } catch (error) {
       console.error("Error fetching user data:", error);
-      // setFeedback(`Error fetching user data: ${error.message}`); // Optional: show error to user
+      // setFeedback(`Error fetching user data: ${error.message}`); 
     } finally {
       setIsFetchingUserData(false);
     }
   };
 
   useEffect(() => {
-    fetchUserData(); // Fetch user data on component mount or authToken change
+    fetchUserData(); 
   }, [authToken]);
 
   const handleStartGame = async () => {
@@ -91,7 +90,7 @@ export const TriviaGame = ({ authToken }) => {
       if (!response.ok) throw new Error(data.detail || 'Failed to submit answer.');
       setFeedback(data.message);
       setQuestion(null);
-      fetchUserData(); // Refresh badges and points after submitting an answer
+      fetchUserData(); 
     } catch (error) {
       setFeedback(error.message);
     } finally {

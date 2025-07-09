@@ -16,9 +16,7 @@ export const CalendarEvents = ({ authToken }) => {
           headers: { 'Authorization': `Bearer ${authToken}` },
         });
         const data = await response.json();
-        // Assuming backend returns an array of events directly if successful,
-        // or an object with an 'items' key if that's how it's structured.
-        // Adjust 'data.items || []' to 'data || []' if the backend directly returns an array.
+        
         setEvents(data.items || data || []); 
       } catch (err) {
         setError(err.message);
@@ -30,7 +28,7 @@ export const CalendarEvents = ({ authToken }) => {
     fetchEvents();
   }, [authToken]);
 
-  // Hardcoded list of energetic/comedy movies, mixed Hindi and English, with search links
+  
   const energeticComedyMovies = [
     { title: "The Hangover", link: "https://www.google.com/search?q=The+Hangover+movie" },
     { title: "Guardians of the Galaxy", link: "https://www.google.com/search?q=Guardians+of+the+Galaxy+movie" },

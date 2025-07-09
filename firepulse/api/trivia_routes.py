@@ -1,4 +1,3 @@
-# firepulse/api/trivia_routes.py
 from fastapi import APIRouter, HTTPException, Body, Request, Depends, status
 from sqlalchemy.orm import Session
 import httpx
@@ -11,7 +10,7 @@ from ..api.auth_routes import get_current_user
 from ..models.user import User as UserModel
 from ..crud import trivia as trivia_crud
 from ..schemas import trivia as trivia_schema
-from ..services import gamification # Ensure this import is correct
+from ..services import gamification 
 
 router = APIRouter()
 
@@ -110,23 +109,21 @@ def submit_trivia_answer(submission: trivia_schema.AnswerSubmission, db: Session
 
     if is_correct:
         points_awarded = 10
-        # --- START OF CHANGE (Fix InvalidRequestError for persistency) ---
-        # Re-fetch the user within this session to ensure it's persistent
-        # This is safer when modifying an object obtained from a dependency
+        
         user_to_update = db.query(UserModel).filter(UserModel.id == current_user.id).first()
-        if user_to_update: # Ensure user is found
+        if user_to_update: 
             user_to_update.total_points = (user_to_update.total_points or 0) + points_awarded
             db.commit()
-            db.refresh(user_to_update) # Refresh the re-fetched object
-            # Update current_user in case it's used later in this function
+            db.refresh(user_to_update) 
+            
             current_user.total_points = user_to_update.total_points
-            current_user.badges = user_to_update.badges # Also update badges if needed for gamification
-        # --- END OF CHANGE ---
+            current_user.badges = user_to_update.badges 
+       
 
         message = f"Correct! You earned {points_awarded} points."
         
-        # Pass the updated user object to gamification.check_and_award_badges
-        new_badges = gamification.check_and_award_badges(db, user=user_to_update) # Pass user_to_update
+        
+        new_badges = gamification.check_and_award_badges(db, user=user_to_update) 
         if new_badges:
             badge_names = [badge.name for badge in new_badges]
             message += f" You've earned new badges: {', '.join(badge_names)}!"

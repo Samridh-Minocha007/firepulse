@@ -1,4 +1,3 @@
-# firepulse/crud/history.py
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 from ..models.history import MovieHistory 
@@ -15,13 +14,13 @@ def add_movie_to_history(db: Session, user_id: int, movie_details: dict):
     existing_entry = db.query(MovieHistory).filter_by(user_id=user_id, tmdb_id=movie_details['id']).first()
 
     if existing_entry:
-        # --- THIS IS THE FIX for the timestamp bug ---
+        
         existing_entry.watched_at = func.now()
         db.commit()
         db.refresh(existing_entry)
         return existing_entry
 
-    # If it's a new entry, create it
+    
     db_history_item = MovieHistory(
         user_id=user_id, 
         movie_title=movie_details['title'],

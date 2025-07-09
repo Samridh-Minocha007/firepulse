@@ -1,4 +1,3 @@
-# firepulse/api/history_routes.py
 from fastapi import APIRouter, HTTPException, Body, Request, Depends
 from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
@@ -17,7 +16,7 @@ from ..crud import history as history_crud
 
 router = APIRouter()
 
-# --- Dependency to get DB session ---
+
 def get_db():
     db = SessionLocal()
     try:
@@ -28,7 +27,7 @@ def get_db():
 class WatchedMovie(BaseModel):
     movie_name: str
 
-# --- HELPER FUNCTIONS (REFACTORED FOR ROBUSTNESS) ---
+
 def normalize(text: str) -> str:
     return re.sub(r"[^\w\s]", "", text.lower()).strip()
 
@@ -69,8 +68,7 @@ async def get_movie_details(client: httpx.AsyncClient, movie_id: int) -> Dict[st
             response.raise_for_status()
             movie_data = response.json()
 
-            # --- THIS IS THE FIX for the genre bug ---
-            # Validate that the response has the data we need, and that genres is not empty.
+            
             if not movie_data.get("genres"):
                 raise ValueError(f"Movie details response for ID {movie_id} is missing 'genres' field or it is empty.")
 
@@ -85,7 +83,7 @@ async def get_movie_details(client: httpx.AsyncClient, movie_id: int) -> Dict[st
 
     raise HTTPException(status_code=504, detail="Could not fetch valid details from the movie service.")
 
-# --- REFACTORED API ENDPOINTS ---
+
 
 @router.post("/history/log-watch", tags=["User History & Recommendations"])
 async def log_watch_history(
@@ -105,7 +103,7 @@ async def log_watch_history(
 
         return {"message": f"Successfully logged '{movie_details['title']}' to your watch history."}
     except HTTPException as e:
-        # Re-raise the exception from the helper functions
+        
         raise e
 
 @router.get("/history/recommendations", tags=["User History & Recommendations"])

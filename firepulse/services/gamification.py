@@ -1,4 +1,3 @@
-# firepulse/services/gamification.py
 from sqlalchemy.orm import Session
 from ..models.user import User as UserModel
 from ..models.trivia import UserAnswer, TriviaQuestion
@@ -9,13 +8,12 @@ def check_and_award_badges(db: Session, user: UserModel) -> list[str]:
     Checks user's trivia performance and awards new badges.
     Returns a list of names of newly awarded badges.
     """
-    # --- THIS IS THE FIX ---
-    # Merge the user object into the current session to avoid DetachedInstanceError
+    
     user = db.merge(user)
 
     newly_awarded_badges = []
 
-    # --- Rule 1: First Correct Answer ---
+    
     first_correct_badge = badge_crud.get_badge_by_name(db, name="First Correct Answer")
     if first_correct_badge and first_correct_badge not in user.badges:
         correct_answers_count = db.query(UserAnswer).filter_by(user_id=user.id, was_correct=True).count()
@@ -23,7 +21,7 @@ def check_and_award_badges(db: Session, user: UserModel) -> list[str]:
             user.badges.append(first_correct_badge)
             newly_awarded_badges.append(first_correct_badge.name)
 
-    # --- Rule 2: Movie Novice ---
+    
     movie_novice_badge = badge_crud.get_badge_by_name(db, name="Movie Novice")
     if movie_novice_badge and movie_novice_badge not in user.badges:
         correct_movie_answers = (

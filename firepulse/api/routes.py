@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 import httpx
 
-# Import your service functions
+
 from ..services import movie_bot, song_bot, voice
 
 router = APIRouter()
@@ -19,11 +19,11 @@ async def get_movie_suggestions(query_request: QueryRequest, request: Request):
     client: httpx.AsyncClient = request.app.state.httpx_client
     query_text = query_request.query.strip()
     
-    # --- Step 1: Assume the query is a person's name and search for them ---
+   
     person_name = query_text.title()
     person_id = await movie_bot.search_person_async(client, person_name)
     
-    # --- Step 2: If a person is found, return their movies ---
+    
     if person_id:
         movie_results = await movie_bot.get_movies_by_person_async(client, person_id)
         if not movie_results:
@@ -34,7 +34,7 @@ async def get_movie_suggestions(query_request: QueryRequest, request: Request):
         voice_url: str | None = await voice.text_to_speech(client, message)
         return {"text": message, "voice_url": voice_url}
 
-    # --- Step 3: If no person was found, fall back to mood-based movie search ---
+    
     movie_mood = movie_bot.extract_mood(query_text)
     if not movie_mood:
         raise HTTPException(status_code=404, detail="Sorry, I couldn't find an actor/director by that name or understand the mood.")
@@ -56,20 +56,20 @@ async def get_song_suggestions(query_request: QueryRequest, request: Request):
     query_text = query_request.query.strip()
     artist_name = query_text.title()
 
-    # --- Step 1: Assume the query is an artist's name and search for them ---
+   
     song_results: list[str] = await song_bot.get_songs_by_artist(request, artist_name)
     
     if song_results and "Failed" not in song_results[0]:
-        # --- DEFINITIVE DEBUGGING STEP ---
+       
         print("\n--- DEBUG MARKER: CONSTRUCTING SONG MESSAGE ---")
         message = f"Here are some songs by {artist_name}: " + ", ".join(song_results)
         print(f"--- DEBUG MARKER: FINAL MESSAGE BEING SENT: '{message}' ---\n")
-        # --- END DEBUGGING STEP ---
+        
 
         voice_url: str | None = await voice.text_to_speech(request.app.state.httpx_client, message)
         return {"text": message, "voice_url": voice_url}
     
-    # --- Step 3: If no artist was found, fall back to mood-based song search ---
+    
     song_mood = song_bot.extract_song_mood(query_text)
     if not song_mood:
         raise HTTPException(

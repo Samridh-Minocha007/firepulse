@@ -1,4 +1,3 @@
-# firepulse/crud/trivia.py
 from sqlalchemy.orm import Session
 from sqlalchemy import func, and_
 from ..models.trivia import TriviaQuestion as TriviaQuestionModel, UserAnswer as UserAnswerModel
@@ -13,21 +12,20 @@ def create_trivia_question(db: Session, question_data: dict, category: str):
 
     db_question = db.query(TriviaQuestionModel).filter_by(question_text=question_text).first()
     if db_question:
-        # If question already exists, return it, but ensure it's not marked as answered for this user
-        # (This logic is handled by get_unanswered_question's filter)
+        
         return db_question
 
     correct_answer_text = ""
     incorrect_answers = []
     for answer in question_data['answers']:
-        if answer.get('is_correct'): # Use .get() for safety
+        if answer.get('is_correct'): 
             correct_answer_text = answer.get('text')
         else:
             incorrect_answers.append(answer.get('text'))
 
-    # Ensure there are always 3 incorrect answers, fill with placeholders if Gemini provides fewer
+    
     while len(incorrect_answers) < 3:
-        incorrect_answers.append("Generated incorrect answer") # Fallback text
+        incorrect_answers.append("Generated incorrect answer") 
 
     db_question = TriviaQuestionModel(
         category=category,
@@ -51,7 +49,7 @@ def get_unanswered_question(db: Session, category: str, user_id: int):
         .filter(
             and_(
                 TriviaQuestionModel.category.ilike(f'%{category}%'),
-                TriviaQuestionModel.id.notin_(answered_question_ids) # Use not_in for a subquery
+                TriviaQuestionModel.id.notin_(answered_question_ids) 
             )
         )
         .order_by(func.random())
@@ -78,4 +76,4 @@ def get_user_score(db: Session, user_id: int) -> int:
         .filter_by(user_id=user_id, was_correct=True)
         .count()
     )
-    return correct_answers_count * 10 # 10 points per correct answer
+    return correct_answers_count * 10 

@@ -1,4 +1,3 @@
-# firepulse/schemas/trivia.py
 from pydantic import BaseModel, ConfigDict
 from typing import List
 

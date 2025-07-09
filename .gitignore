@@ -1,20 +1,17 @@
-# Virtual environment folder
 venv/
 
-# Python compiled bytecode
+
 __pycache__/
 *.pyc
 
-# Sensitive environment variables file
+
 .env
 
-# Operating System generated files
-Thumbs.db    # Windows
 
-# VS Code specific files (optional, but generally good to ignore for shared projects)
+Thumbs.db    # Windows
 .vscode/
 
-# Any log files your application might generate
+
 *.log
 
 
@@ -24,7 +21,7 @@ app/static/audio/
 *.ogg
 
 
-# If you don't want the .qodo folder to be part of the repo
+
 .qodo/
 
 firepulse/core/config.py

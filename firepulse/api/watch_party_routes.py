@@ -1,4 +1,3 @@
-# firepulse/api/watch_party_routes.py
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
 from sqlalchemy.orm import Session
 import httpx
@@ -8,7 +7,7 @@ from ..core.db import SessionLocal
 
 router = APIRouter()
 
-# Dependency to get a DB session for our new logic
+
 def get_db():
     db = SessionLocal()
     try:
@@ -31,14 +30,14 @@ async def websocket_endpoint(websocket: WebSocket, party_id: str, user_id: str, 
         while True:
             data = await websocket.receive_text()
 
-            # --- NEW: Logic to handle special commands ---
+            
             if data == "suggest_movie":
                 await manager.broadcast("Finding a movie for the group...", party_id)
                 user_ids_in_party = manager.get_users_in_party(party_id)
                 suggestion = await group_recs.suggest_movie_for_group(db, client, user_ids_in_party)
                 await manager.broadcast(f"Suggestion for the group: {suggestion}", party_id)
             else:
-                # Broadcast normal chat messages
+               
                 await manager.broadcast(f"{user_id}: {data}", party_id)
 
     except WebSocketDisconnect:

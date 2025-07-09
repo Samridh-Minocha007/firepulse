@@ -1,4 +1,3 @@
-# firepulse/models/history.py
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import relationship
@@ -11,7 +10,7 @@ class MovieHistory(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     movie_title = Column(String, nullable=False)
-    # --- These columns must be present ---
+   
     tmdb_id = Column(Integer, nullable=False)
     genres = Column(JSONB)
 

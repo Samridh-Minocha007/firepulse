@@ -1,4 +1,3 @@
-# seed_db.py
 from firepulse.core.db import SessionLocal
 from firepulse.crud.badge import create_badge
 

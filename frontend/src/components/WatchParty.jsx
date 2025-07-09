@@ -4,42 +4,41 @@ const VideoIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 18a2 2 0 0 1-2-2V8a2 0 0 1 2-2h.1a2 0 0 1 2 1.9v8.2a2 0 0 1-2.1 2Z"/><path d="m10 10-4 4 4 4"/><path d="m10 14H2"/></svg>
 );
 
-export const WatchParty = ({ authToken, userEmail }) => { // authToken is received but NOT used in WS URL
+export const WatchParty = ({ authToken, userEmail }) => { 
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
-    const [partyId, setPartyId] = useState('movie_night'); // Default party ID
+    const [partyId, setPartyId] = useState('movie_night'); 
     const [isConnected, setIsConnected] = useState(false);
     const websocket = useRef(null);
     const messagesEndRef = useRef(null);
 
-    // Restore last used partyId from localStorage
+    
     useEffect(() => {
         const savedPartyId = localStorage.getItem('partyId');
         if (savedPartyId) setPartyId(savedPartyId);
     }, []);
 
-    // Scroll to bottom when chat updates
+    
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
-    // Save partyId to localStorage on change
+    
     useEffect(() => {
         if (partyId) localStorage.setItem('partyId', partyId);
     }, [partyId]);
 
     const connect = () => {
-        // Prevent multiple connections
+        
         if (websocket.current && websocket.current.readyState === WebSocket.OPEN) return;
         
-        // Ensure partyId and userEmail are available before attempting to connect
-        // Note: Backend expects userEmail in path, not authToken in query for this specific WS endpoint
+        
         if (!partyId || !userEmail) {
             setMessages(prev => [...prev, { type: 'error', text: 'Error: Party ID and/or User Email missing. Please log in.' }]);
             return;
         }
 
-        // UPDATED WebSocket URL to match backend's /ws/{party_id}/{user_id} path
+       
         const ws_url = `ws://127.0.0.1:8000/api/v1/ws/${partyId}/${userEmail}`;
         
         websocket.current = new WebSocket(ws_url);
@@ -66,19 +65,19 @@ export const WatchParty = ({ authToken, userEmail }) => { // authToken is receiv
         websocket.current.onerror = (error) => {
             console.error("WebSocket error:", error);
             setMessages(prev => [...prev, { type: 'error', text: 'Connection error. Check console for details.' }]);
-            setIsConnected(false); // Ensure isConnected is false on error
+            setIsConnected(false); 
             websocket.current = null;
         };
     };
     
     const disconnect = () => {
         if (websocket.current) {
-            websocket.current.close(1000, "User initiated disconnect"); // 1000 is normal closure
+            websocket.current.close(1000, "User initiated disconnect"); 
         }
     };
 
     const sendMessage = () => {
-        if (input.trim() === '') return; // Don't send empty messages
+        if (input.trim() === '') return; 
 
         if (websocket.current?.readyState === WebSocket.OPEN) {
             websocket.current.send(input);
@@ -101,7 +100,7 @@ export const WatchParty = ({ authToken, userEmail }) => { // authToken is receiv
 
     const handleSuggestMovie = () => {
         if (websocket.current?.readyState === WebSocket.OPEN) {
-            websocket.current.send('suggest_movie'); // Backend should handle this message
+            websocket.current.send('suggest_movie'); 
         } else {
             setMessages(prev => [...prev, { type: 'error', text: 'Error: Not connected to watch party to suggest movie.' }]);
         }
@@ -136,7 +135,7 @@ export const WatchParty = ({ authToken, userEmail }) => { // authToken is receiv
                             <button 
                                 onClick={connect} 
                                 className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-6 rounded-lg disabled:opacity-50"
-                                disabled={!partyId || !userEmail} // Disable if partyId or userEmail is missing
+                                disabled={!partyId || !userEmail} 
                             >
                                 Connect
                             </button>

@@ -1,4 +1,3 @@
-# firepulse/api/auth_routes.py
 from fastapi import APIRouter, Depends, HTTPException, status,Request
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -7,7 +6,7 @@ from datetime import timedelta, datetime, timezone
 from jose import JWTError, jwt
 from typing import List
 
-# --- MODIFIED: Use specific imports to fix the AttributeError ---
+
 from ..schemas import user as user_schema,trivia as trivia_schema
 from ..crud import user as user_crud
 from ..core import security
@@ -15,15 +14,15 @@ from ..core.db import SessionLocal
 from ..core.config import settings
 from ..models.user import User as UserModel
 
-# Import google_auth module (adjust the import path as needed)
+
 from ..services import google_auth
 
 router = APIRouter()
 
-# This tells FastAPI what URL to check for the token
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/token")
 
-# Dependency to get a DB session
+
 def get_db():
     db = SessionLocal()
     try:
@@ -50,9 +49,9 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise credentials_exception
     return user
 
-# --- MODIFIED: Endpoint to start the Google login flow ---
+
 @router.get("/login/google", tags=["Authentication"])
-def google_login(request: Request): # Add Request to the function signature
+def google_login(request: Request): 
     """
     Generates a URL to the Google login page and redirects the user there.
     """
@@ -62,18 +61,18 @@ def google_login(request: Request): # Add Request to the function signature
         prompt="consent"
     )
 
-    # --- FIX: Store the state in the session ---
+    
     request.session['state'] = state
 
     return RedirectResponse(authorization_url)
 
-# --- MODIFIED: Endpoint to handle the callback from Google ---
+
 @router.get("/auth/callback", tags=["Authentication"])
 def auth_callback(request: Request, db: Session = Depends(get_db)):
     """
     Handles the redirect from Google after user authentication.
     """
-    # --- FIX: Retrieve state from session and validate ---
+    
     state = request.session.get('state')
     if not state:
         raise HTTPException(status_code=400, detail="State not found in session.")
@@ -82,7 +81,7 @@ def auth_callback(request: Request, db: Session = Depends(get_db)):
 
     flow.fetch_token(
         authorization_response=str(request.url),
-        state=state # Pass the state for validation
+        state=state 
     )
 
     credentials = flow.credentials
@@ -121,7 +120,7 @@ def get_calendar_events(current_user: UserModel = Depends(get_current_user)):
         )
 
     try:
-        # Get the start of today and the end of the next 7 days
+        
         now = datetime.now(timezone.utc).isoformat()
         end_time = (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
 
@@ -139,7 +138,7 @@ def get_calendar_events(current_user: UserModel = Depends(get_current_user)):
         if not events:
             return {"message": "No upcoming events found."}
 
-        # Format the events for the response
+       
         formatted_events = []
         for event in events:
             start = event['start'].get('dateTime', event['start'].get('date'))
@@ -182,7 +181,6 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-# --- NEW: Protected endpoint to get the current user's info ---
 @router.get("/users/me/", response_model=user_schema.User, tags=["Authentication"])
 def read_users_me(current_user: UserModel = Depends(get_current_user)):
     """
@@ -191,7 +189,7 @@ def read_users_me(current_user: UserModel = Depends(get_current_user)):
     return current_user
 
 
-# --- NEW: Endpoint to get the current user's badges ---
+
 @router.get("/users/me/badges", response_model=List[trivia_schema.Badge], tags=["Authentication"])
 def read_user_badges(current_user: UserModel = Depends(get_current_user)):
     """
