@@ -98,7 +98,8 @@ Docker (Containerization)<br>
 
 ![Movie Suggestions](assets/Meet-link.png)
 
-# RUN LOCALLY
+# RUN LOCALLY<br>
+
 # Frontend
 cd frontend<br>
 npm install<br>
@@ -109,17 +110,17 @@ cd firepulse<br>
 pip install -r requirements.txt<br>
 uvicorn main:app --reload<br>
 
-#For .env
-TMDB_API_KEY=your_key
-SPOTIFY_CLIENT_ID=your_id
-SPOTIFY_CLIENT_SECRET=your_secret
-GOOGLE_API_KEY=your_api_key
-JWT_SECRET_KEY=your_key
-JWT_ALGORITHM=your_key
-GOOGLE_CLIENT_ID: str=your_key
-GOOGLE_CLIENT_SECRET=your_key
-GOOGLE_REDIRECT_URI=your_key
+# For .env
+TMDB_API_KEY=your_key<br>
+SPOTIFY_CLIENT_ID=your_id<br><br>
+SPOTIFY_CLIENT_SECRET=your_secret<br>
+GOOGLE_API_KEY=your_api_key<br>
+JWT_SECRET_KEY=your_key<br>
+JWT_ALGORITHM=your_key<br>
+GOOGLE_CLIENT_ID: str=your_key<br>
+GOOGLE_CLIENT_SECRET=your_key<br>
+GOOGLE_REDIRECT_URI=your_key<br>
 
-📅 Author
-Samridh Minocha
+# 📅 Author
+Samridh Minocha<br>
 📧 samridhminocha2005@gmail.com
