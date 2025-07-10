@@ -4,7 +4,7 @@ Your All-In-One AI Companion for Movie Discovery, Trivia & Watch Parties
 
 🚀 Features
 
-🎞️ Smart Movie & Music Recommendations
+🎞️ Smart Movie & Music Recommendations<br>
 Powered by Google Gemini Pro
 Tailored suggestions based on mood, time, actor, director, or genre
 Analyzes your watch history & Google Calendar events
