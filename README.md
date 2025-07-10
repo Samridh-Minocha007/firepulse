@@ -5,56 +5,56 @@ Your All-In-One AI Companion for Movie Discovery, Trivia & Watch Parties
 🚀 Features
 
 🎞️ Smart Movie & Music Recommendations<br>
-Powered by Google Gemini Pro
-Tailored suggestions based on mood, time, actor, director, or genre
-Analyzes your watch history & Google Calendar events
+Powered by Google Gemini Pro<br>
+Tailored suggestions based on mood, time, actor, director, or genre<br>
+Analyzes your watch history & Google Calendar events<br>
 
-🤖 AI Trivia Game
-Generates unique questions based on your interests
-Tracks scores and awards badges for milestones
+🤖 AI Trivia Game<br>
+Generates unique questions based on your interests<br>
+Tracks scores and awards badges for milestones<br>
 
-💬 Live Watch Parties
-Real-time rooms powered by WebSockets
-Suggests a movie for the group and launches a video meet in one click
+💬 Live Watch Parties<br>
+Real-time rooms powered by WebSockets<br>
+Suggests a movie for the group and launches a video meet in one click<br>
 
-📅 Google Calendar Integration
-Links with your Google Calendar
-Recommends movies for parties, holidays, and other events
+📅 Google Calendar Integration<br>
+Links with your Google Calendar<br>
+Recommends movies for parties, holidays, and other events<br>
 
-📄 Watch Logging & Personalized History
-Stores your watched movies
-Recommends new ones tailored to your taste
+📄 Watch Logging & Personalized History<br>
+Stores your watched movies<br>
+Recommends new ones tailored to your taste<br>
 
-🧰 Tech Stack
+🧰 Tech Stack<br>
 
-🖥️ Frontend
-React
-Vite
-Tailwind CSS
+🖥️ Frontend<br>
+React<br>
+Vite<br>
+Tailwind CSS<br>
 
-🔧 Backend
-FastAPI (Python)
-WebSockets for real-time sessions
+🔧 Backend<br>
+FastAPI (Python)<br>
+WebSockets for real-time sessions<br>
 
-🗃️ Database
-PostgreSQL
-SQLAlchemy
-Alembic
+🗃️ Database<br>
+PostgreSQL<br>
+SQLAlchemy<br>
+Alembic<br>
 
-🔐 Authentication
-OAuth 2.0 (Google Login)
-JWT Tokens
+🔐 Authentication<br>
+OAuth 2.0 (Google Login)<br>
+JWT Tokens<br>
 
-🌐 APIs
-Google Gemini
-TMDB
-Spotify
-Google Calendar
+🌐 APIs<br>
+Google Gemini<br>
+TMDB<br>
+Spotify<br>
+Google Calendar<br>
 
-☁️ DevOps & Deployment
-AWS Amplify (Frontend)
-AWS Lambda (Backend)
-Docker (Containerization)
+☁️ DevOps & Deployment<br>
+AWS Amplify (Frontend)<br>
+AWS Lambda (Backend)<br>
+Docker (Containerization)<br>
 
 🧠 AI Assistant "Alex" Recommending Movies\Songs
 
@@ -100,14 +100,14 @@ Docker (Containerization)
 
 # RUN LOCALLY
 # Frontend
-cd frontend
-npm install
-npm run dev
+cd frontend<br>
+npm install<br>
+npm run dev<br>
 
 # Backend
-cd firepulse
-pip install -r requirements.txt
-uvicorn main:app --reload
+cd firepulse<br>
+pip install -r requirements.txt<br>
+uvicorn main:app --reload<br>
 
 #For .env
 TMDB_API_KEY=your_key
