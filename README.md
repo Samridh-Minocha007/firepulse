@@ -1,62 +1,68 @@
-🎜️ FirePulse+ - AI-Powered Entertainment Hub
+# 🎜️ FirePulse+ - AI-Powered Entertainment Hub
 
-Your All-In-One AI Companion for Movie Discovery, Trivia & Watch Parties
+**Your All-In-One AI Companion for Movie Discovery, Trivia & Watch Parties**
 
-🚀 Features
+---
 
-🎞️ Smart Movie & Music Recommendations<br>
-Powered by Google Gemini Pro<br>
-Tailored suggestions based on mood, time, actor, director, or genre<br>
-Analyzes your watch history & Google Calendar events<br>
+## 🚀 Features
 
-🤖 AI Trivia Game<br>
-Generates unique questions based on your interests<br>
-Tracks scores and awards badges for milestones<br>
+### 🎞️ Smart Movie & Music Recommendations  
+Powered by **Google Gemini Pro**  
+- Tailored suggestions based on mood, time, actor, director, or genre  
+- Analyzes your watch history & Google Calendar events  
 
-💬 Live Watch Parties<br>
-Real-time rooms powered by WebSockets<br>
-Suggests a movie for the group and launches a video meet in one click<br>
+### 🤖 AI Trivia Game  
+- Generates unique questions based on your interests  
+- Tracks scores and awards badges for milestones  
 
-📅 Google Calendar Integration<br>
-Links with your Google Calendar<br>
-Recommends movies for parties, holidays, and other events<br>
+### 💬 Live Watch Parties  
+- Real-time rooms powered by WebSockets  
+- Suggests a movie for the group and launches a video meet in one click  
 
-📄 Watch Logging & Personalized History<br>
-Stores your watched movies<br>
-Recommends new ones tailored to your taste<br>
+### 📅 Google Calendar Integration  
+- Links with your Google Calendar  
+- Recommends movies for parties, holidays, and other events  
 
-🧰 Tech Stack<br>
+### 📄 Watch Logging & Personalized History  
+- Stores your watched movies  
+- Recommends new ones tailored to your taste  
 
-🖥️ Frontend<br>
-React<br>
-Vite<br>
-Tailwind CSS<br>
+---
 
-🔧 Backend<br>
-FastAPI (Python)<br>
-WebSockets for real-time sessions<br>
+## 🧰 Tech Stack
 
-🗃️ Database<br>
-PostgreSQL<br>
-SQLAlchemy<br>
-Alembic<br>
+### 🖥️ Frontend  
+- React  
+- Vite  
+- Tailwind CSS  
 
-🔐 Authentication<br>
-OAuth 2.0 (Google Login)<br>
-JWT Tokens<br>
+### 🔧 Backend  
+- FastAPI (Python)  
+- WebSockets for real-time sessions  
 
-🌐 APIs<br>
-Google Gemini<br>
-TMDB<br>
-Spotify<br>
-Google Calendar<br>
+### 🗃️ Database  
+- PostgreSQL  
+- SQLAlchemy  
+- Alembic  
 
-☁️ DevOps & Deployment<br>
-AWS Amplify (Frontend)<br>
-AWS Lambda (Backend)<br>
-Docker (Containerization)<br>
+### 🔐 Authentication  
+- OAuth 2.0 (Google Login)  
+- JWT Tokens  
 
-🧠 AI Assistant "Alex" Recommending Movies\Songs
+### 🌐 APIs  
+- Google Gemini  
+- TMDB  
+- Spotify  
+- Google Calendar  
+
+### ☁️ DevOps & Deployment  
+- AWS Amplify (Frontend)  
+- AWS Lambda (Backend)  
+- Docker (Containerization)  
+
+---
+
+## 🧠 AI Assistant "Alex" Recommending Movies/Songs
 
 ![Movie Suggestions](assets/movie-suggestions.png)
 
@@ -64,15 +70,21 @@ Docker (Containerization)<br>
 
 ![Movie Suggestions](assets/song-suggestions.png)
 
-⏱️Time Based Suggestions
+---
+
+## ⏱️ Time Based Suggestions
 
 ![Movie Suggestions](assets/time-based-recommendations.png)
 
-✅History Based Suggestions
+---
+
+## ✅ History Based Suggestions
 
 ![Movie Suggestions](assets/history-based-recommendations.png)
 
-🎉 Personalized AI Trivia Game 
+---
+
+## 🎉 Personalized AI Trivia Game 
 
 ![Movie Suggestions](assets/trivia-1.png)
 
@@ -80,11 +92,15 @@ Docker (Containerization)<br>
 
 ![Movie Suggestions](assets/trivia-3.png)
 
-🎃 Calendar-Integrated Movie Suggestions
+---
+
+## 🎃 Calendar-Integrated Movie Suggestions
 
 ![Movie Suggestions](assets/calendar-based.png)
 
-📽 Live Watch Party with AI Suggestions
+---
+
+## 📽 Live Watch Party with AI Suggestions
 
 ![Movie Suggestions](assets/watch-party.png)
 
@@ -98,29 +114,43 @@ Docker (Containerization)<br>
 
 ![Movie Suggestions](assets/Meet-link.png)
 
-# RUN LOCALLY<br>
+---
 
-# Frontend
-cd frontend<br>
-npm install<br>
-npm run dev<br>
+## 🛠️ Run Locally
 
-# Backend
-cd firepulse<br>
-pip install -r requirements.txt<br>
-uvicorn main:app --reload<br>
+### 🔧 Frontend
 
-# For .env
-TMDB_API_KEY=your_key<br>
-SPOTIFY_CLIENT_ID=your_id<br><br>
-SPOTIFY_CLIENT_SECRET=your_secret<br>
-GOOGLE_API_KEY=your_api_key<br>
-JWT_SECRET_KEY=your_key<br>
-JWT_ALGORITHM=your_key<br>
-GOOGLE_CLIENT_ID: str=your_key<br>
-GOOGLE_CLIENT_SECRET=your_key<br>
-GOOGLE_REDIRECT_URI=your_key<br>
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-# 📅 Author
-Samridh Minocha<br>
-📧 samridhminocha2005@gmail.com
+### 🔧 Backend
+
+```bash
+cd firepulse
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+### 🌐 Environment Variables (.env)
+
+```env
+TMDB_API_KEY=your_key
+SPOTIFY_CLIENT_ID=your_id
+SPOTIFY_CLIENT_SECRET=your_secret
+GOOGLE_API_KEY=your_api_key
+JWT_SECRET_KEY=your_key
+JWT_ALGORITHM=your_key
+GOOGLE_CLIENT_ID=your_key
+GOOGLE_CLIENT_SECRET=your_key
+GOOGLE_REDIRECT_URI=your_key
+```
+
+---
+
+## 📅 Author
+
+**Samridh Minocha**  
+📧 [samridhminocha2005@gmail.com](mailto:samridhminocha2005@gmail.com)
